@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Modelo Conceptual InpeCable</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #eef2f3; 
+            color: #333; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+            border-top: 8px solid #0056b3;
+        }
+        h1 { color: #0056b3; text-align: center; font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 1.1em; }
+        h2 { color: #0056b3; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 30px; }
+        .section { margin-bottom: 25px; }
+        .cards { display: flex; flex-wrap: wrap; gap: 15px; }
+        .card { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 8px; 
+            flex: 1 1 calc(33.333% - 15px); 
+            box-sizing: border-box; 
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        .card h3 { margin-top: 0; color: #0056b3; font-size: 1.2em; }
+        .relations li { margin-bottom: 10px; font-size: 1.1em; }
+        .highlight { 
+            background-color: #0056b3; 
+            color: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            text-align: center; 
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+        .footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #777; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📡 Modelo Conceptual: InpeCable</h1>
+        <div class="subtitle">Gestión de Telecomunicaciones y Facturación</div>
+
+        <div class="section">
+            <h2>1. El Caso de Negocio</h2>
+            <p><strong>InpeCable</strong> requiere organizar de manera estructurada su información operativa. Este modelo de base de datos facilita el control del ciclo de vida de las suscripciones, el registro de facturación y el seguimiento de incidencias técnicas.</p>
+        </div>
+
+        <div class="section">
+            <h2>2. Entidades Principales</h2>
+            <div class="cards">
+                <div class="card">
+                    <h3>👤 Cliente</h3>
+                    <p>Registra datos personales, contacto y dirección principal del titular.</p>
+                </div>
+                <div class="card">
+                    <h3>🌐 Plan Servicio</h3>
+                    <p>Catálogo centralizado de planes de internet y cable con sus precios.</p>
+                </div>
+                <div class="card">
+                    <h3>📄 Contrato</h3>
+                    <p>Vincula al cliente con un plan, controlando su estado de suscripción.</p>
+                </div>
+                <div class="card">
+                    <h3>💳 Factura</h3>
+                    <p>Control mensual de cobros, fechas de vencimiento y morosidad.</p>
+                </div>
+                <div class="card">
+                    <h3>🛠️ Ticket Soporte</h3>
+                    <p>Gestión y estado de las incidencias técnicas reportadas.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Reglas y Relaciones Clave</h2>
+            <ul class="relations">
+                <li>Un <strong>Cliente</strong> puede firmar múltiples <strong>Contratos</strong> (1:N).</li>
+                <li>Un <strong>Plan de Servicio</strong> puede ser asignado a muchos <strong>Contratos</strong> (1:N).</li>
+                <li>Un <strong>Contrato</strong> genera múltiples <strong>Facturas</strong> a lo largo del tiempo (1:N).</li>
+                <li>Un <strong>Cliente</strong> puede reportar múltiples <strong>Tickets de Soporte</strong> (1:N).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>4. Valor del Modelo de Datos</h2>
+            <div class="highlight">
+                El diseño permite realizar consultas ágiles y vitales para la gerencia, tales como identificar clientes con facturas vencidas (estado "Pendiente"), calcular ingresos mensuales o conocer los planes más rentables.
+            </div>
+        </div>
+
+        <div class="footer">
+            Entregable: Infografía - Modelado de Bases de Datos
+        </div>
+    </div>
+
+</body>
+</html>

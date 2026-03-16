@@ -1,112 +1,234 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infografía: Modelo Conceptual InpeCable</title>
-    <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #eef2f3; 
-            color: #333; 
-            margin: 0; 
-            padding: 20px; 
-        }
-        .container { 
-            max-width: 800px; 
-            margin: auto; 
-            background: white; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
-            border-top: 8px solid #0056b3;
-        }
-        h1 { color: #0056b3; text-align: center; font-size: 2.5em; margin-bottom: 10px; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 1.1em; }
-        h2 { color: #0056b3; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 30px; }
-        .section { margin-bottom: 25px; }
-        .cards { display: flex; flex-wrap: wrap; gap: 15px; }
-        .card { 
-            background: #f8f9fa; 
-            padding: 15px; 
-            border-radius: 8px; 
-            flex: 1 1 calc(33.333% - 15px); 
-            box-sizing: border-box; 
-            text-align: center;
-            border: 1px solid #dee2e6;
-        }
-        .card h3 { margin-top: 0; color: #0056b3; font-size: 1.2em; }
-        .relations li { margin-bottom: 10px; font-size: 1.1em; }
-        .highlight { 
-            background-color: #0056b3; 
-            color: white; 
-            padding: 20px; 
-            border-radius: 8px; 
-            text-align: center; 
-            font-size: 1.1em;
-            line-height: 1.5;
-        }
-        .footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #777; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InpeCable – Modelo Conceptual de Base de Datos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f4f4f8;
+    color: #1a1a2e;
+    padding: 32px 16px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  .hero {
+    background: #1a1a2e;
+    border-radius: 16px;
+    padding: 28px 32px 22px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, #4f46e5 0%, transparent 70%);
+    opacity: 0.35;
+  }
+  .hero-tag {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: #a5b4fc; margin-bottom: 8px;
+  }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: #fff; line-height: 1.15; margin-bottom: 6px;
+  }
+  .hero-title span { color: #818cf8; }
+  .hero-sub { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .badge {
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    color: #c7d2fe; border: 1px solid rgba(255,255,255,0.12);
+  }
+  .section {
+    border-radius: 14px; border: 1px solid #e2e2ec;
+    background: #ffffff; padding: 18px 20px; margin-bottom: 14px;
+  }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .section-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .icon-purple { background: #ede9fe; color: #6d28d9; }
+  .icon-green  { background: #d1fae5; color: #065f46; }
+  .icon-amber  { background: #fef3c7; color: #92400e; }
+  .icon-pink   { background: #fce7f3; color: #9d174d; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .req-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .req-item { display: flex; align-items: flex-start; gap: 7px; font-size: 12px; color: #5a5a7a; line-height: 1.4; }
+  .req-dot { width: 6px; height: 6px; border-radius: 50%; background: #818cf8; margin-top: 5px; flex-shrink: 0; }
+  .entity-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+  .entity-card { border-radius: 10px; padding: 10px 8px; border: 1px solid #e2e2ec; }
+  .entity-card .ename { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; margin-bottom: 6px; color: #1a1a2e; text-align: center; }
+  .entity-card .attrs { font-size: 10px; color: #5a5a7a; line-height: 1.6; }
+  .pk { color: #6d28d9; font-weight: 600; }
+  .fk { color: #0369a1; font-weight: 600; }
+  .e-cl { background: #f5f3ff; border-color: #c4b5fd; }
+  .e-pl { background: #f0fdf4; border-color: #86efac; }
+  .e-co { background: #fff7ed; border-color: #fdba74; }
+  .e-fa { background: #fef9c3; border-color: #fde047; }
+  .e-ti { background: #fdf2f8; border-color: #f9a8d4; }
+  .legend { display: flex; gap: 16px; font-size: 11px; color: #5a5a7a; margin-top: 4px; }
+  .rel-list { display: flex; flex-direction: column; gap: 7px; }
+  .rel-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .rel-from, .rel-to {
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+    background: #fff; border: 1px solid #d1d1e0; color: #1a1a2e;
+  }
+  .rel-card-badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500; background: #e0e7ff; color: #3730a3; white-space: nowrap; }
+  .rel-verb { font-size: 11px; color: #5a5a7a; white-space: nowrap; }
+  .rel-arrow { color: #a0a0b8; font-size: 14px; }
+  .sql-desc { font-size: 12px; color: #5a5a7a; margin-bottom: 10px; line-height: 1.5; }
+  .sql-box {
+    background: #0f172a; border-radius: 10px;
+    padding: 14px 16px; font-family: 'Courier New', monospace;
+    font-size: 11px; line-height: 1.7;
+    border: 1px solid #1e293b; color: #e2e8f0;
+  }
+  .kw { color: #818cf8; }
+  .tbl { color: #34d399; }
+  .str { color: #fbbf24; }
+  .cmt { color: #475569; }
+  .note-pill {
+    font-size: 11px; padding: 4px 10px; border-radius: 20px;
+    background: rgba(129,140,248,0.12); color: #4f46e5;
+    border: 1px solid rgba(129,140,248,0.25);
+    margin-top: 8px; display: inline-block;
+  }
+</style>
 </head>
 <body>
-
-    <div class="container">
-        <h1>📡 Modelo Conceptual: InpeCable</h1>
-        <div class="subtitle">Gestión de Telecomunicaciones y Facturación</div>
-
-        <div class="section">
-            <h2>1. El Caso de Negocio</h2>
-            <p><strong>InpeCable</strong> requiere organizar de manera estructurada su información operativa. Este modelo de base de datos facilita el control del ciclo de vida de las suscripciones, el registro de facturación y el seguimiento de incidencias técnicas.</p>
-        </div>
-
-        <div class="section">
-            <h2>2. Entidades Principales</h2>
-            <div class="cards">
-                <div class="card">
-                    <h3>👤 Cliente</h3>
-                    <p>Registra datos personales, contacto y dirección principal del titular.</p>
-                </div>
-                <div class="card">
-                    <h3>🌐 Plan Servicio</h3>
-                    <p>Catálogo centralizado de planes de internet y cable con sus precios.</p>
-                </div>
-                <div class="card">
-                    <h3>📄 Contrato</h3>
-                    <p>Vincula al cliente con un plan, controlando su estado de suscripción.</p>
-                </div>
-                <div class="card">
-                    <h3>💳 Factura</h3>
-                    <p>Control mensual de cobros, fechas de vencimiento y morosidad.</p>
-                </div>
-                <div class="card">
-                    <h3>🛠️ Ticket Soporte</h3>
-                    <p>Gestión y estado de las incidencias técnicas reportadas.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>3. Reglas y Relaciones Clave</h2>
-            <ul class="relations">
-                <li>Un <strong>Cliente</strong> puede firmar múltiples <strong>Contratos</strong> (1:N).</li>
-                <li>Un <strong>Plan de Servicio</strong> puede ser asignado a muchos <strong>Contratos</strong> (1:N).</li>
-                <li>Un <strong>Contrato</strong> genera múltiples <strong>Facturas</strong> a lo largo del tiempo (1:N).</li>
-                <li>Un <strong>Cliente</strong> puede reportar múltiples <strong>Tickets de Soporte</strong> (1:N).</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>4. Valor del Modelo de Datos</h2>
-            <div class="highlight">
-                El diseño permite realizar consultas ágiles y vitales para la gerencia, tales como identificar clientes con facturas vencidas (estado "Pendiente"), calcular ingresos mensuales o conocer los planes más rentables.
-            </div>
-        </div>
-
-        <div class="footer">
-            Entregable: Infografía - Modelado de Bases de Datos
-        </div>
+<div class="wrap">
+ 
+  <div class="hero">
+    <div class="hero-tag">Taller 1.4 · Modelado Conceptual · Grupo: No DATA</div>
+    <div class="hero-title">InpeCable<br><span>Base de Datos</span></div>
+    <div class="hero-sub">Empresa de telecomunicaciones · TV por cable e Internet · Universidad Andina del Cusco</div>
+    <div class="badge-row">
+      <div class="badge">Olivera Ochoa Paul Claus</div>
+      <div class="badge">Carpio Delgado Alejandro</div>
+      <div class="badge">Haro Rosales Joaquín</div>
+      <div class="badge">Molero Zegarra Thiago</div>
     </div>
-
+  </div>
+ 
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">📋</div>
+      <div class="section-title">Análisis de Requerimientos</div>
+    </div>
+    <div class="req-list">
+      <div class="req-item"><div class="req-dot"></div>Registrar info básica de clientes</div>
+      <div class="req-item"><div class="req-dot"></div>Gestionar catálogo de planes de servicio</div>
+      <div class="req-item"><div class="req-dot"></div>Registrar contratos / suscripciones</div>
+      <div class="req-item"><div class="req-dot"></div>Control de estado operativo del contrato</div>
+      <div class="req-item"><div class="req-dot"></div>Asociar contratos con clientes</div>
+      <div class="req-item"><div class="req-dot"></div>Asociar contratos con planes de servicio</div>
+      <div class="req-item"><div class="req-dot"></div>Facturación mensual por suscripción activa</div>
+      <div class="req-item"><div class="req-dot"></div>Estado de pagos (pendiente / pagado)</div>
+      <div class="req-item"><div class="req-dot"></div>Tickets de soporte técnico (ERP)</div>
+      <div class="req-item"><div class="req-dot"></div>Consultar servicios activos del cliente</div>
+      <div class="req-item"><div class="req-dot"></div>Reportes de morosidad y planes populares</div>
+    </div>
+  </div>
+ 
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🗂</div>
+      <div class="section-title">Entidades y Atributos</div>
+    </div>
+    <div class="entity-grid">
+      <div class="entity-card e-cl">
+        <div class="ename">CLIENTE</div>
+        <div class="attrs"><span class="pk">PK</span> DNI<br>Nombres<br>Apellidos<br>Dir. Principal<br>Teléfono<br>Correo</div>
+      </div>
+      <div class="entity-card e-pl">
+        <div class="ename">PLAN_SERVICIO</div>
+        <div class="attrs"><span class="pk">PK</span> ID_Plan<br>Nombre_Plan<br>Tipo_Servicio<br>Precio_Mensual</div>
+      </div>
+      <div class="entity-card e-co">
+        <div class="ename">CONTRATO</div>
+        <div class="attrs"><span class="pk">PK</span> ID_Contrato<br>Fecha_Inicio<br>Dir. Instalación<br>Estado<br><span class="fk">FK</span> DNI_Cliente<br><span class="fk">FK</span> ID_Plan</div>
+      </div>
+      <div class="entity-card e-fa">
+        <div class="ename">FACTURA</div>
+        <div class="attrs"><span class="pk">PK</span> Nro_Factura<br>Fecha_Emisión<br>Fecha_Venc.<br>Monto_Total<br>Estado_Pago<br><span class="fk">FK</span> ID_Contrato</div>
+      </div>
+      <div class="entity-card e-ti">
+        <div class="ename">TICKET_SOPORTE</div>
+        <div class="attrs"><span class="pk">PK</span> ID_Ticket<br>Fecha_Reporte<br>Descripción<br>Estado_Atención<br><span class="fk">FK</span> DNI_Cliente</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><span class="pk">■</span> Clave Primaria (PK)</span>
+      <span><span class="fk">■</span> Clave Foránea (FK)</span>
+    </div>
+  </div>
+ 
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-amber">🔗</div>
+      <div class="section-title">Relaciones y Cardinalidades</div>
+    </div>
+    <div class="rel-list">
+      <div class="rel-item">
+        <div class="rel-from">CLIENTE</div><div class="rel-arrow">→</div>
+        <div class="rel-to">CONTRATO</div>
+        <div class="rel-card-badge">1 : N</div>
+        <div class="rel-verb">tiene / firma</div>
+      </div>
+      <div class="rel-item">
+        <div class="rel-from">PLAN_SERVICIO</div><div class="rel-arrow">→</div>
+        <div class="rel-to">CONTRATO</div>
+        <div class="rel-card-badge">1 : N</div>
+        <div class="rel-verb">incluye / asignado_a</div>
+      </div>
+      <div class="rel-item">
+        <div class="rel-from">CONTRATO</div><div class="rel-arrow">→</div>
+        <div class="rel-to">FACTURA</div>
+        <div class="rel-card-badge">1 : N</div>
+        <div class="rel-verb">genera / pagada_por</div>
+      </div>
+      <div class="rel-item">
+        <div class="rel-from">CLIENTE</div><div class="rel-arrow">→</div>
+        <div class="rel-to">TICKET_SOPORTE</div>
+        <div class="rel-card-badge">1 : N</div>
+        <div class="rel-verb">reporta / abre</div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-pink">💡</div>
+      <div class="section-title">Ejemplo de Consulta de Negocio</div>
+    </div>
+    <div class="sql-desc">Facturas pendientes de pago de un cliente — útil para gestión de morosidad y cobranza.</div>
+    <div class="sql-box">
+      <span class="cmt">-- Facturas pendientes de un cliente específico</span><br>
+      <span class="kw">SELECT</span> <span class="tbl">Factura</span>.Nro_Factura,<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="tbl">Factura</span>.Monto_Total,<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="tbl">Factura</span>.Fecha_Vencimiento<br>
+      <span class="kw">FROM</span> <span class="tbl">Factura</span><br>
+      <span class="kw">JOIN</span> <span class="tbl">Contrato</span> <span class="kw">ON</span> Factura.ID_Contrato = Contrato.ID_Contrato<br>
+      <span class="kw">WHERE</span> Contrato.DNI_Cliente = <span class="str">'12345678'</span><br>
+      &nbsp;&nbsp;<span class="kw">AND</span> Factura.Estado_Pago = <span class="str">'Pendiente'</span>;
+    </div>
+    <div class="note-pill">Otras consultas: planes más contratados · ingresos del mes · clientes morosos</div>
+  </div>
+ 
+</div>
 </body>
 </html>

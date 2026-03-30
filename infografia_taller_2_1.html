@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infografía – Procedimientos Almacenados en Oracle · NoDATA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #09090f;
+    --surface:   #10101c;
+    --card:      #141426;
+    --border:    #1e1e3a;
+    --cyan:      #00e5ff;
+    --purple:    #9d4edd;
+    --pink:      #f72585;
+    --green:     #06ffa5;
+    --orange:    #ff9f1c;
+    --text:      #e8e8f0;
+    --muted:     #6b6b8a;
+    --mono:      'Space Mono', monospace;
+    --sans:      'Syne', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    width: 1100px;
+    margin: 0 auto;
+    padding: 48px 0 80px;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 24px;
+    padding: 40px 48px 36px;
+    background: linear-gradient(135deg, #0d0d1f 0%, #10102a 60%, #12081a 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(0,229,255,.12) 0%, transparent 70%);
+    top: -120px; right: -60px;
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(157,78,221,.1) 0%, transparent 70%);
+    bottom: -80px; left: 20px;
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    opacity: .8;
+  }
+  .header h1 {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #fff 30%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .header-sub {
+    font-size: 14px;
+    color: var(--muted);
+    font-family: var(--mono);
+    line-height: 1.7;
+  }
+  .header-sub span { color: var(--text); }
+
+  .team-block {
+    background: rgba(0,229,255,.05);
+    border: 1px solid rgba(0,229,255,.2);
+    border-radius: 14px;
+    padding: 20px 24px;
+    min-width: 250px;
+    position: relative; z-index: 1;
+  }
+  .team-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 12px;
+  }
+  .team-name {
+    font-size: 12.5px;
+    color: var(--text);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.4;
+  }
+  .team-name:last-child { border-bottom: none; }
+
+  /* ─── DATOS GENERALES ─── */
+  .datos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .dato-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dato-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent, var(--cyan));
+  }
+  .dato-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .dato-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .section-title h2 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -.3px;
+  }
+  .section-title .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  /* ─── TWO-COL LAYOUT ─── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 28px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 28px; }
+
+  /* ─── OBJECTIVE CARD ─── */
+  .obj-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 26px;
+  }
+  .obj-main {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .obj-main strong { color: var(--cyan); }
+
+  .obj-list { list-style: none; }
+  .obj-list li {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: #b0b0cc;
+    line-height: 1.5;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+  }
+  .obj-list li:last-child { border-bottom: none; }
+  .obj-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--cyan);
+    background: rgba(0,229,255,.1);
+    border-radius: 4px;
+    padding: 2px 6px;
+    height: 18px;
+    line-height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ─── NEGOCIO ─── */
+  .negocio-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  .negocio-card::after {
+    content: 'InpeCable';
+    position: absolute;
+    right: -10px; bottom: -20px;
+    font-size: 80px;
+    font-weight: 800;
+    color: rgba(0,229,255,.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .negocio-card p {
+    font-size: 13.5px;
+    color: #b0b0cc;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .scenario-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .chip-cyan  { background: rgba(0,229,255,.1); color: var(--cyan); border: 1px solid rgba(0,229,255,.3); }
+  .chip-purple{ background: rgba(157,78,221,.1); color: var(--purple); border: 1px solid rgba(157,78,221,.3); }
+  .chip-pink  { background: rgba(247,37,133,.1); color: var(--pink); border: 1px solid rgba(247,37,133,.3); }
+  .chip-green { background: rgba(6,255,165,.1); color: var(--green); border: 1px solid rgba(6,255,165,.3); }
+  .chip-orange{ background: rgba(255,159,28,.1); color: var(--orange); border: 1px solid rgba(255,159,28,.3); }
+
+  /* ─── ENTITIES ─── */
+  .entity-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .entity-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    position: relative;
+  }
+  .entity-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+    background: var(--ecol, var(--cyan));
+  }
+  .entity-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ecol, var(--cyan));
+    margin-bottom: 12px;
+    letter-spacing: .5px;
+  }
+  .attr {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #9090b0;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    line-height: 1.4;
+  }
+  .attr:last-child { border-bottom: none; }
+  .attr-pk {
+    font-family: var(--mono);
+    font-size: 8px;
+    background: rgba(0,229,255,.2);
+    color: var(--cyan);
+    padding: 1px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .attr-fk {
+    font-family: var(--mono);
+    font-size: 8px;
+    background: rgba(157,78,221,.2);
+    color: var(--purple);
+    padding: 1px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  /* ─── RELATIONS ─── */
+  .rel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .rel-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .rel-ent {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--surface);
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .rel-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .rel-arrow .card-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .rel-arrow .arrow-line {
+    width: 40px; height: 1px;
+    background: var(--cyan);
+    position: relative;
+  }
+  .rel-arrow .arrow-line::after {
+    content: '▶';
+    position: absolute;
+    right: -6px; top: -5px;
+    font-size: 8px;
+    color: var(--cyan);
+  }
+  .rel-verb {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    flex: 1;
+  }
+
+  /* ─── PROCEDURES ─── */
+  .proc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .proc-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .proc-header {
+    padding: 18px 20px 14px;
+    background: var(--pcol-bg, rgba(0,229,255,.05));
+    border-bottom: 1px solid var(--border);
+  }
+  .proc-num {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--pcol, var(--cyan));
+    margin-bottom: 6px;
+  }
+  .proc-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .proc-body {
+    padding: 16px 20px;
+  }
+  .proc-desc {
+    font-size: 12.5px;
+    color: #9090b0;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .proc-params { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .param-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .param-in  { background: rgba(6,255,165,.12); color: var(--green); border: 1px solid rgba(6,255,165,.3); }
+  .param-out { background: rgba(255,159,28,.12); color: var(--orange); border: 1px solid rgba(255,159,28,.3); }
+  .code-block {
+    background: #0a0a14;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: #8080a8;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  .kw { color: #9d4edd; }
+  .fn { color: #00e5ff; }
+  .str { color: #06ffa5; }
+  .cm { color: #3d3d5c; }
+
+  /* ─── FEATURES ─── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .feat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .feat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .feat-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .feat-desc {
+    font-size: 12px;
+    color: #8080a0;
+    line-height: 1.6;
+  }
+
+  /* ─── TESTS ─── */
+  .test-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .test-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .test-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .test-cmd {
+    background: #0a0a14;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .test-result {
+    font-size: 12px;
+    color: #8080a0;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .test-ok  { color: var(--green); }
+  .test-err { color: var(--pink); }
+
+  /* ─── EVAL CRITERIA ─── */
+  .eval-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .eval-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+  }
+  .eval-section-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eval-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+  }
+  .eval-row:last-child { border-bottom: none; }
+  .eval-code {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--purple);
+    background: rgba(157,78,221,.1);
+    border: 1px solid rgba(157,78,221,.2);
+    border-radius: 4px;
+    padding: 3px 7px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .eval-text { font-size: 12px; color: #9090b0; line-height: 1.5; flex: 1; }
+  .eval-pts {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cyan);
+    flex-shrink: 0;
+  }
+
+  /* ─── LEARNING OUTCOMES ─── */
+  .outcome-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .outcome-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    border-left: 3px solid var(--outcol, var(--cyan));
+  }
+  .outcome-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--outcol, var(--cyan));
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .outcome-text { font-size: 13px; color: #b0b0cc; line-height: 1.6; }
+
+  /* ─── CONCLUSION ─── */
+  .conclusion-card {
+    background: linear-gradient(135deg, #0d0d1f 0%, #100d1f 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .conclusion-card::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(157,78,221,.12) 0%, transparent 70%);
+    bottom: -80px; right: -40px;
+    pointer-events: none;
+  }
+  .conclusion-card p {
+    font-size: 14px;
+    color: #b0b0cc;
+    line-height: 1.75;
+    margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+  .conclusion-card p:last-child { margin-bottom: 0; }
+  .conclusion-card p strong { color: var(--cyan); }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── MB ─── */
+  .mb { margin-bottom: 28px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER ════════════════ -->
+<div class="header">
+  <div>
+    <div class="badge">TALLER 2.1 · MODELADO DE BASES DE DATOS · 2026-I</div>
+    <h1>Procedimientos Almacenados<br>en Oracle</h1>
+    <div class="header-sub">
+      <span>Universidad Andina del Cusco</span> · Facultad de Ingeniería y Arquitectura<br>
+      Ingeniería de Sistemas · Ciclo V · Semana del 30 de marzo al 1 de abril de 2026<br>
+      Docente: <span>Espetia Huamanga Hugo</span> · Grupo: <span>No DATA</span>
+    </div>
+  </div>
+  <div class="team-block">
+    <div class="team-title">· Integrantes ·</div>
+    <div class="team-name">Olivera Ochoa, Paul Claus</div>
+    <div class="team-name">Carpio Delgado, Alejandro Eduardo</div>
+    <div class="team-name">Haro Rosales, Joaquín</div>
+    <div class="team-name">Molero Zegarra, Thiago Valentino</div>
+  </div>
+</div>
+
+<!-- ════════════════ DATOS GENERALES ════════════════ -->
+<div class="datos-grid mb">
+  <div class="dato-card" style="--accent:var(--cyan)">
+    <div class="dato-label">Asignatura</div>
+    <div class="dato-value">Modelado de Bases de Datos</div>
+  </div>
+  <div class="dato-card" style="--accent:var(--purple)">
+    <div class="dato-label">Actividad</div>
+    <div class="dato-value">Procedimientos Almacenados</div>
+  </div>
+  <div class="dato-card" style="--accent:var(--green)">
+    <div class="dato-label">Semestre · Ciclo</div>
+    <div class="dato-value">2026-I · Ciclo V</div>
+  </div>
+  <div class="dato-card" style="--accent:var(--orange)">
+    <div class="dato-label">Fecha de Aplicación</div>
+    <div class="dato-value">30 de marzo de 2026</div>
+  </div>
+</div>
+
+<!-- ════════════════ OBJETIVOS ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(0,229,255,.1);">🎯</div>
+  <h2 style="color:var(--cyan)">Objetivos de la Actividad</h2>
+  <div class="line"></div>
+</div>
+
+<div class="two-col">
+  <div class="obj-card">
+    <div class="obj-main">
+      <strong>Objetivo General —</strong> Que los estudiantes comprendan, diseñen e implementen procedimientos almacenados en Oracle para <strong>automatizar tareas comunes</strong> de gestión y consulta de información, aplicados a la base de datos desarrollada en la Unidad I (InpeCable).
+    </div>
+    <ul class="obj-list">
+      <li><span class="obj-num">01</span>Identificar escenarios prácticos en un Datacenter donde los procedimientos almacenados mejoran eficiencia y seguridad.</li>
+      <li><span class="obj-num">02</span>Desarrollar la lógica SQL necesaria para implementar procedimientos almacenados.</li>
+      <li><span class="obj-num">03</span>Crear procedimientos almacenados en Oracle con la sintaxis PL/SQL adecuada.</li>
+      <li><span class="obj-num">04</span>Utilizar parámetros de entrada (IN) y salida (OUT).</li>
+    </ul>
+  </div>
+  <div class="obj-card">
+    <div class="obj-main" style="border-bottom:none;margin-bottom:0;padding-bottom:0;">
+      <ul class="obj-list">
+        <li><span class="obj-num">05</span>Implementar lógica de control de flujo (condicionales, bucles) dentro de los procedimientos.</li>
+        <li><span class="obj-num">06</span>Manejar errores básicos mediante bloques EXCEPTION para mayor robustez del sistema.</li>
+        <li><span class="obj-num">07</span>Ejecutar y probar los procedimientos almacenados creados en un entorno real.</li>
+        <li><span class="obj-num">08</span>Documentar detalladamente cada procedimiento almacenado desarrollado.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ NEGOCIO ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(157,78,221,.1);">📡</div>
+  <h2 style="color:var(--purple)">Descripción del Negocio — InpeCable</h2>
+  <div class="line"></div>
+</div>
+
+<div class="negocio-card mb">
+  <p><strong style="color:var(--cyan)">InpeCable</strong> es una empresa proveedora de servicios de telecomunicaciones especializada en <strong style="color:var(--text)">televisión por cable e internet</strong>. Sus clientes contratan planes de servicio instalados directamente en domicilios o locales comerciales. La empresa gestiona de forma centralizada su cartera de clientes, catálogo de planes, contratos activos, facturación mensual y tickets de soporte técnico.</p>
+  <p>Los procedimientos almacenados fueron diseñados para automatizar los procesos operativos críticos del <strong style="color:var(--text)">Datacenter</strong>, reduciendo el tráfico de red, eliminando errores humanos y garantizando la integridad referencial de los datos.</p>
+  <div class="scenario-chips">
+    <span class="chip chip-cyan">📄 Generación masiva de facturas</span>
+    <span class="chip chip-purple">🎫 Apertura de tickets de soporte</span>
+    <span class="chip chip-pink">⚠️ Cálculo de morosidad</span>
+    <span class="chip chip-green">🔐 Validación de clientes</span>
+    <span class="chip chip-orange">📊 Gestión de suscripciones</span>
+  </div>
+</div>
+
+<!-- ════════════════ MODELO DE DATOS ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(6,255,165,.1);">🗄️</div>
+  <h2 style="color:var(--green)">Modelo de Datos — Entidades y Atributos</h2>
+  <div class="line"></div>
+</div>
+
+<div class="entity-grid">
+  <!-- CLIENTE -->
+  <div class="entity-card" style="--ecol:var(--cyan)">
+    <div class="entity-name">CLIENTE</div>
+    <div class="attr"><span class="attr-pk">PK</span> DNI</div>
+    <div class="attr">Nombres</div>
+    <div class="attr">Apellidos</div>
+    <div class="attr">Direccion_Principal</div>
+    <div class="attr">Telefono</div>
+    <div class="attr">Correo</div>
+  </div>
+  <!-- PLAN_SERVICIO -->
+  <div class="entity-card" style="--ecol:var(--purple)">
+    <div class="entity-name">PLAN_SERVICIO</div>
+    <div class="attr"><span class="attr-pk">PK</span> ID_Plan</div>
+    <div class="attr">Nombre_Plan</div>
+    <div class="attr">Tipo_Servicio</div>
+    <div class="attr">Precio_Mensual</div>
+  </div>
+  <!-- CONTRATO -->
+  <div class="entity-card" style="--ecol:var(--orange)">
+    <div class="entity-name">CONTRATO</div>
+    <div class="attr"><span class="attr-pk">PK</span> ID_Contrato</div>
+    <div class="attr">Fecha_Inicio</div>
+    <div class="attr">Direccion_Instalacion</div>
+    <div class="attr">Estado_Suscripcion</div>
+    <div class="attr"><span class="attr-fk">FK</span> DNI_Cliente</div>
+    <div class="attr"><span class="attr-fk">FK</span> ID_Plan</div>
+  </div>
+  <!-- FACTURA -->
+  <div class="entity-card" style="--ecol:var(--green)">
+    <div class="entity-name">FACTURA</div>
+    <div class="attr"><span class="attr-pk">PK</span> Nro_Factura</div>
+    <div class="attr">Fecha_Emision</div>
+    <div class="attr">Fecha_Vencimiento</div>
+    <div class="attr">Monto_Total</div>
+    <div class="attr">Estado_Pago</div>
+    <div class="attr"><span class="attr-fk">FK</span> ID_Contrato</div>
+  </div>
+  <!-- TICKET_SOPORTE -->
+  <div class="entity-card" style="--ecol:var(--pink)">
+    <div class="entity-name">TICKET_SOPORTE</div>
+    <div class="attr"><span class="attr-pk">PK</span> ID_Ticket</div>
+    <div class="attr">Fecha_Reporte</div>
+    <div class="attr">Descripcion_Falla</div>
+    <div class="attr">Estado_Atencion</div>
+    <div class="attr"><span class="attr-fk">FK</span> DNI_Cliente</div>
+  </div>
+</div>
+
+<!-- RELACIONES -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(255,159,28,.1);">🔗</div>
+  <h2 style="color:var(--orange)">Relaciones y Cardinalidades</h2>
+  <div class="line"></div>
+</div>
+
+<div class="rel-grid mb">
+  <div class="rel-card">
+    <span class="rel-ent">CLIENTE</span>
+    <div class="rel-arrow">
+      <span class="card-label">1 : N</span>
+      <div class="arrow-line"></div>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">tiene / firma</span>
+    </div>
+    <span class="rel-ent">CONTRATO</span>
+  </div>
+  <div class="rel-card">
+    <span class="rel-ent">PLAN_SERVICIO</span>
+    <div class="rel-arrow">
+      <span class="card-label">1 : N</span>
+      <div class="arrow-line"></div>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">incluye</span>
+    </div>
+    <span class="rel-ent">CONTRATO</span>
+  </div>
+  <div class="rel-card">
+    <span class="rel-ent">CONTRATO</span>
+    <div class="rel-arrow">
+      <span class="card-label">1 : N</span>
+      <div class="arrow-line"></div>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">genera</span>
+    </div>
+    <span class="rel-ent">FACTURA</span>
+  </div>
+  <div class="rel-card">
+    <span class="rel-ent">CLIENTE</span>
+    <div class="rel-arrow">
+      <span class="card-label">1 : N</span>
+      <div class="arrow-line"></div>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">reporta / abre</span>
+    </div>
+    <span class="rel-ent">TICKET_SOPORTE</span>
+  </div>
+</div>
+
+<!-- ════════════════ PROCEDIMIENTOS ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(0,229,255,.1);">⚙️</div>
+  <h2 style="color:var(--cyan)">Procedimientos Almacenados Desarrollados</h2>
+  <div class="line"></div>
+</div>
+
+<div class="proc-grid">
+  <!-- SP_Generar_Factura -->
+  <div class="proc-card">
+    <div class="proc-header" style="--pcol:var(--cyan);--pcol-bg:rgba(0,229,255,.05)">
+      <div class="proc-num">Procedimiento 01</div>
+      <div class="proc-title">SP_Generar_Factura</div>
+      <div class="proc-params">
+        <span class="param-tag param-in">IN p_id_contrato</span>
+      </div>
+    </div>
+    <div class="proc-body">
+      <div class="proc-desc">Automatiza la emisión de facturas. Verifica que el contrato exista y esté activo, obtiene el precio del plan asociado y registra la factura con estado "Pendiente" y vencimiento a 15 días.</div>
+      <div class="code-block">
+<span class="kw">SELECT</span> COUNT(*) <span class="kw">INTO</span> v_count<br>
+<span class="kw">FROM</span> CONTRATO<br>
+<span class="kw">WHERE</span> Estado = <span class="str">'Activo'</span>;<br><br>
+<span class="kw">INSERT INTO</span> FACTURA (<span class="fn">...</span>)<br>
+<span class="kw">VALUES</span> (v_nro, SYSDATE,<br>
+&nbsp;&nbsp;SYSDATE+<span class="str">15</span>, v_precio,<br>
+&nbsp;&nbsp;<span class="str">'Pendiente'</span>, p_id);<br>
+<span class="kw">COMMIT</span>;<br>
+<span class="cm">-- EXCEPTION: ROLLBACK</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SP_Registrar_Ticket -->
+  <div class="proc-card">
+    <div class="proc-header" style="--pcol:var(--purple);--pcol-bg:rgba(157,78,221,.05)">
+      <div class="proc-num">Procedimiento 02</div>
+      <div class="proc-title">SP_Registrar_Ticket</div>
+      <div class="proc-params">
+        <span class="param-tag param-in">IN p_dni_cliente</span>
+        <span class="param-tag param-in">IN p_descripcion</span>
+      </div>
+    </div>
+    <div class="proc-body">
+      <div class="proc-desc">Centraliza la lógica de inserción de tickets de soporte técnico. Valida previamente la existencia del cliente (integridad referencial) antes de registrar el ticket con estado "Abierto".</div>
+      <div class="code-block">
+<span class="kw">SELECT</span> COUNT(*) <span class="kw">INTO</span> v_existe<br>
+<span class="kw">FROM</span> CLIENTE<br>
+<span class="kw">WHERE</span> DNI = p_dni;<br><br>
+<span class="kw">IF</span> v_existe &gt; 0 <span class="kw">THEN</span><br>
+&nbsp;&nbsp;<span class="kw">INSERT INTO</span> TICKET (<span class="fn">...</span>)<br>
+&nbsp;&nbsp;<span class="kw">VALUES</span> (v_id, SYSDATE,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;p_desc, <span class="str">'Abierto'</span>, p_dni);<br>
+&nbsp;&nbsp;<span class="kw">COMMIT</span>;<br>
+<span class="kw">ELSE RAISE_APPLICATION_ERROR</span>;
+      </div>
+    </div>
+  </div>
+
+  <!-- SP_Consultar_Deuda -->
+  <div class="proc-card">
+    <div class="proc-header" style="--pcol:var(--orange);--pcol-bg:rgba(255,159,28,.05)">
+      <div class="proc-num">Procedimiento 03</div>
+      <div class="proc-title">SP_Consultar_Deuda</div>
+      <div class="proc-params">
+        <span class="param-tag param-in">IN p_dni_cliente</span>
+        <span class="param-tag param-out">OUT p_deuda_total</span>
+      </div>
+    </div>
+    <div class="proc-body">
+      <div class="proc-desc">Calcula la deuda acumulada del cliente procesando las sumas directamente en el servidor. Usa un parámetro OUT para retornar el total de facturas pendientes sin necesidad de un SELECT externo.</div>
+      <div class="code-block">
+<span class="kw">SELECT</span> COALESCE(<br>
+&nbsp;&nbsp;<span class="fn">SUM</span>(f.Monto_Total), 0)<br>
+<span class="kw">INTO</span> p_deuda_total<br>
+<span class="kw">FROM</span> FACTURA f<br>
+<span class="kw">JOIN</span> CONTRATO c<br>
+&nbsp;&nbsp;<span class="kw">ON</span> f.ID_Contrato=c.ID<br>
+<span class="kw">WHERE</span> c.DNI = p_dni<br>
+&nbsp;&nbsp;<span class="kw">AND</span> Estado = <span class="str">'Pendiente'</span>;
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ TÉCNICAS AVANZADAS ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(6,255,165,.1);">🛡️</div>
+  <h2 style="color:var(--green)">Técnicas de Programación Aplicadas</h2>
+  <div class="line"></div>
+</div>
+
+<div class="feature-grid">
+  <div class="feat-card">
+    <div class="feat-icon" style="background:rgba(0,229,255,.1);">📥</div>
+    <div class="feat-title" style="color:var(--cyan)">Parámetros IN / OUT</div>
+    <div class="feat-desc">Los procedimientos reciben datos mediante parámetros <strong style="color:var(--text)">IN</strong> (DNI, ID de contrato) y retornan cálculos mediante parámetros <strong style="color:var(--text)">OUT</strong> (deuda total acumulada), eliminando la necesidad de consultas SELECT externas.</div>
+  </div>
+  <div class="feat-card">
+    <div class="feat-icon" style="background:rgba(157,78,221,.1);">🔀</div>
+    <div class="feat-title" style="color:var(--purple)">Control de Flujo IF/THEN</div>
+    <div class="feat-desc">Se emplean estructuras condicionales <strong style="color:var(--text)">IF ... THEN ... ELSE</strong> para garantizar validaciones cruzadas: verificar estado activo del contrato y existencia del cliente antes de ejecutar inserciones críticas.</div>
+  </div>
+  <div class="feat-card">
+    <div class="feat-icon" style="background:rgba(247,37,133,.1);">⚡</div>
+    <div class="feat-title" style="color:var(--pink)">Manejo de Errores EXCEPTION</div>
+    <div class="feat-desc">Bloques <strong style="color:var(--text)">EXCEPTION</strong> con <code style="color:var(--muted)">WHEN OTHERS</code> y <code style="color:var(--muted)">RAISE_APPLICATION_ERROR</code> capturan fallos inesperados y ejecutan <strong style="color:var(--text)">ROLLBACK</strong> automático para proteger la integridad del Datacenter.</div>
+  </div>
+</div>
+
+<!-- ════════════════ PRUEBAS ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(255,159,28,.1);">🧪</div>
+  <h2 style="color:var(--orange)">Ejecución y Pruebas</h2>
+  <div class="line"></div>
+</div>
+
+<div class="test-grid">
+  <div class="test-card">
+    <div class="test-label">· Prueba de Facturación Exitosa ·</div>
+    <div class="test-cmd">EXEC SP_Generar_Factura('CON-001');</div>
+    <div class="test-result"><span class="test-ok">✓</span> Inserción exitosa de nueva factura asociada al plan del contrato correspondiente. Estado registrado como "Pendiente" con vencimiento a 15 días.</div>
+  </div>
+  <div class="test-card">
+    <div class="test-label">· Prueba de Validación de Error ·</div>
+    <div class="test-cmd">EXEC SP_Registrar_Ticket('00000000', 'Falla');</div>
+    <div class="test-result"><span class="test-err">✗</span> Sistema bloqueó la acción correctamente. Mensaje: <em style="color:var(--pink)">"ORA-20002: El cliente no existe"</em>. Integridad referencial garantizada.</div>
+  </div>
+  <div class="test-card">
+    <div class="test-label">· Ejemplo de Bloque Anónimo ·</div>
+    <div class="test-cmd">SP_Consultar_Deuda('12345678', v_deuda);</div>
+    <div class="test-result"><span class="test-ok">✓</span> Retorna la deuda acumulada del cliente mediante parámetro OUT. Output: <em style="color:var(--green)">"La deuda total es: S/ [monto]"</em></div>
+  </div>
+  <div class="test-card">
+    <div class="test-label">· Decisión de Diseño Principal ·</div>
+    <div class="test-cmd">-- Validación antes de COMMIT</div>
+    <div class="test-result"><span class="test-ok">✓</span> Toda inserción crítica realiza validaciones cruzadas antes del COMMIT. Las reglas de negocio quedan documentadas directamente en el motor de base de datos.</div>
+  </div>
+</div>
+
+<!-- ════════════════ RESULTADOS DE APRENDIZAJE ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(157,78,221,.1);">📚</div>
+  <h2 style="color:var(--purple)">Resultados de Aprendizaje</h2>
+  <div class="line"></div>
+</div>
+
+<div class="outcome-grid mb">
+  <div class="outcome-card" style="--outcol:var(--cyan)">
+    <div class="outcome-id">AG-C07 · Conocimientos de Computación</div>
+    <div class="outcome-text">Aplica conocimientos apropiados de matemáticas, ciencias y computación para desarrollar soluciones a problemas complejos de computación.</div>
+  </div>
+  <div class="outcome-card" style="--outcol:var(--purple)">
+    <div class="outcome-id">AG-C09 · Diseño y Desarrollo de Soluciones</div>
+    <div class="outcome-text">Diseña, implementa y evalúa soluciones para problemas complejos de computación, satisfaciendo necesidades específicas con consideraciones holísticas para el desarrollo sostenible.</div>
+  </div>
+  <div class="outcome-card" style="--outcol:var(--green)">
+    <div class="outcome-id">AG-C071 · Indicador de Desempeño</div>
+    <div class="outcome-text">Aplica conocimientos de matemáticas, ciencias y computación en la solución de problemas de la disciplina del programa.</div>
+  </div>
+  <div class="outcome-card" style="--outcol:var(--orange)">
+    <div class="outcome-id">AG-C091 · Indicador de Desempeño</div>
+    <div class="outcome-text">Diseña soluciones para problemas complejos de computación satisfaciendo necesidades específicas, con pensamiento sistémico.</div>
+  </div>
+</div>
+
+<!-- ════════════════ CRITERIOS DE EVALUACIÓN ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(0,229,255,.1);">📋</div>
+  <h2 style="color:var(--cyan)">Criterios de Evaluación</h2>
+  <div class="line"></div>
+</div>
+
+<div class="eval-grid mb">
+  <div class="eval-section">
+    <div class="eval-section-title">· Criterios Específicos (AG-C091) ·</div>
+    <div class="eval-row">
+      <span class="eval-code">AG-C091.1</span>
+      <span class="eval-text">Los estudiantes comprenden y aplican la implementación de procedimientos almacenados en Oracle.</span>
+      <span class="eval-pts">10 pts</span>
+    </div>
+    <div class="eval-row">
+      <span class="eval-code">AG-C091.2</span>
+      <span class="eval-text">El informe es completo, bien estructurado y presenta claramente el proceso de desarrollo, resultados y conclusiones.</span>
+      <span class="eval-pts">3 pts</span>
+    </div>
+    <div class="eval-row">
+      <span class="eval-code">AG-C091.3</span>
+      <span class="eval-text">La presentación es clara, concisa y demuestra un profundo entendimiento del proyecto.</span>
+      <span class="eval-pts">3 pts</span>
+    </div>
+  </div>
+  <div class="eval-section">
+    <div class="eval-section-title">· Criterios Transversales (AG-C071) ·</div>
+    <div class="eval-row">
+      <span class="eval-code">AG-C071.1</span>
+      <span class="eval-text">Todos los miembros del equipo contribuyen de manera significativa y equitativa en el sustento del informe.</span>
+      <span class="eval-pts">2 pts</span>
+    </div>
+    <div class="eval-row">
+      <span class="eval-code">AG-C071.2</span>
+      <span class="eval-text">Los miembros se comunican de manera clara, respetuosa y constructiva en la exposición final, aplicando conocimientos de computación para desarrollar soluciones.</span>
+      <span class="eval-pts">2 pts</span>
+    </div>
+    <div class="eval-row" style="margin-top:12px;background:rgba(0,229,255,.05);border-radius:8px;padding:12px;">
+      <span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);">TOTAL</span>
+      <span class="eval-text"></span>
+      <span style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--cyan);">20 pts</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ CONCLUSIÓN ════════════════ -->
+<div class="section-title">
+  <div class="section-icon" style="background:rgba(6,255,165,.1);">✅</div>
+  <h2 style="color:var(--green)">Conclusiones</h2>
+  <div class="line"></div>
+</div>
+
+<div class="conclusion-card">
+  <p>El desarrollo de procedimientos almacenados para la base de datos de <strong>InpeCable</strong> permitió comprender cómo <strong>automatizar de manera estructurada</strong> los procesos operativos del negocio. Mediante el uso de rutinas PL/SQL, parámetros de entrada/salida y manejo de excepciones, se mejoró significativamente la seguridad y eficiencia del Datacenter.</p>
+  <p>Trasladar la lógica de programación a la base de datos constituye una etapa fundamental en la optimización de sistemas de información, ya que <strong>reduce el tráfico de red</strong> y garantiza una estructura coherente y consistente para la futura implementación del módulo principal del ERP de la empresa.</p>
+  <p>El trabajo representa una base adecuada para la <strong>escalabilidad del sistema de gestión de InpeCable</strong>, permitiendo mejorar significativamente su eficiencia operativa y la integridad de los datos críticos del negocio.</p>
+</div>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<div class="footer">
+  TALLER 2.1 · PROCEDIMIENTOS ALMACENADOS EN ORACLE · GRUPO: NO DATA · MODELADO DE BASES DE DATOS · UAC 2026-I
+</div>
+
+</body>
+</html>

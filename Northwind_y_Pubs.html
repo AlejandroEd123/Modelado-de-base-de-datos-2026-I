@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Dominio de Joins en SQL Server</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+
+        .venn-container {
+            position: relative;
+            width: 140px;
+            height: 100px;
+            margin: 0 auto;
+        }
+
+        .circle {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        .left-circle { left: 0; }
+        .right-circle { right: 0; }
+
+        .bg-gradient-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .code-block {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .highlight-sql { color: #38bdf8; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto bg-gradient-header text-white rounded-3xl p-8 mb-10 shadow-2xl relative overflow-hidden">
+        <div class="relative z-10">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="bg-blue-500 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-tighter">UAC Sistemas</span>
+                <span class="text-slate-400 text-xs font-mono">Actividad: Dominio de Joins</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold mb-4">Dominio de Joins en SQL Server</h1>
+            <p class="text-slate-400 text-lg md:text-xl font-light max-w-2xl">
+                Análisis comparativo de extracción multitabla y lógica de negocio en entornos 
+                <strong>Northwind</strong> y <strong>Pubs</strong>.
+            </p>
+        </div>
+        <div class="absolute right-0 top-0 opacity-10 p-10 hidden lg:block">
+            <i class="fa-solid fa-database text-[12rem]"></i>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto space-y-12">
+        
+        <!-- Sección 1: Lógica de los Joins -->
+        <section>
+            <div class="flex items-center gap-3 mb-8">
+                <div class="h-8 w-2 bg-blue-600 rounded-full"></div>
+                <h2 class="text-2xl font-bold text-slate-800">1. Lógica de los Joins Aplicados</h2>
+                <span class="text-slate-400 text-sm font-medium italic">"El motor que une las entidades"</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Inner Join -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 card-hover">
+                    <div class="venn-container mb-4">
+                        <div class="circle left-circle bg-slate-100">A</div>
+                        <div class="circle right-circle bg-slate-100">B</div>
+                        <div class="circle left-circle bg-blue-500 opacity-60" style="clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); left: 30px; width: 20px;"></div>
+                    </div>
+                    <h3 class="text-lg font-bold text-blue-700 mb-2 text-center">INNER JOIN</h3>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold mb-2 text-center tracking-widest">Estándar de Integridad</p>
+                    <p class="text-slate-600 text-sm mb-4 leading-relaxed text-center">
+                        Para procesos donde la relación debe ser exacta. Asegura que cada venta (Orders) tenga un responsable (Employees).
+                    </p>
+                </div>
+
+                <!-- Left Join -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 card-hover border-b-4 border-b-emerald-500">
+                    <div class="venn-container mb-4">
+                        <div class="circle left-circle bg-emerald-500 text-white border-emerald-600">A</div>
+                        <div class="circle right-circle bg-slate-100">B</div>
+                    </div>
+                    <h3 class="text-lg font-bold text-emerald-700 mb-2 text-center">LEFT JOIN</h3>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold mb-2 text-center tracking-widest">Análisis de Huecos</p>
+                    <p class="text-slate-600 text-sm mb-4 leading-relaxed text-center">
+                        Vital para encontrar datos sin pareja. Aplicado para detectar clientes que nunca han comprado o productos sin stock.
+                    </p>
+                </div>
+
+                <!-- Right Join -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 card-hover border-b-4 border-b-orange-500">
+                    <div class="venn-container mb-4">
+                        <div class="circle left-circle bg-slate-100">A</div>
+                        <div class="circle right-circle bg-orange-500 text-white border-orange-600">B</div>
+                    </div>
+                    <h3 class="text-lg font-bold text-orange-700 mb-2 text-center">RIGHT JOIN</h3>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold mb-2 text-center tracking-widest">Predominio Derecho</p>
+                    <p class="text-slate-600 text-sm mb-4 leading-relaxed text-center">
+                        Prioriza la tabla B. Permite identificar empleados que aún no han procesado ninguna orden de venta.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 2: Comparativa -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Northwind Column -->
+            <div class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white">
+                        <i class="fa-solid fa-ship"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Enfoque: Northwind</h2>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-6">
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="p-4 bg-blue-50 rounded-xl">
+                            <h4 class="font-bold text-blue-800 mb-1">Cadena de Suministro Compleja</h4>
+                            <p class="text-sm text-slate-600">A diferencia de Pubs, permite rastrear el flujo comercial total: <strong>Suppliers → Products → Order Details</strong> hasta el destino final.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl">
+                            <h4 class="font-bold text-slate-800 mb-1">Técnica Avanzada: Self-Join</h4>
+                            <p class="text-sm text-slate-600">Uso de jerarquías recursivas en <strong>Employees</strong> para reportes de mando, un nivel técnico superior no explorado en Pubs.</p>
+                        </div>
+                        <div class="p-4 bg-indigo-50 rounded-xl">
+                            <h4 class="font-bold text-indigo-800 mb-1">Segmentación Robusta</h4>
+                            <p class="text-sm text-slate-600">Tablas de <strong>Territories y Region</strong> normalizadas para análisis de rendimiento geográfico detallado.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                        <h4 class="text-xs font-bold text-red-700 uppercase mb-2">Reto Técnico</h4>
+                        <p class="text-xs text-red-600 leading-tight">La multiplicidad de relaciones exige hasta 6 Joins simultáneos. Se requiere precisión en <strong>Order Details</strong> para evitar errores en cálculos de ingresos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pubs Column -->
+            <div class="space-y-6 text-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-600 p-2 rounded-lg text-white">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Enfoque: Pubs</h2>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+                    <p class="text-sm leading-relaxed font-medium text-slate-600">
+                        Mientras Northwind es logística y flujo comercial, Pubs se centra en la propiedad intelectual y autoría.
+                    </p>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex gap-3 text-sm">
+                            <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                            <span><strong>Relación N:M:</strong> Foco principal en Autores y Libros mediante tablas intermedias (TitleAuthor).</span>
+                        </li>
+                        <li class="flex gap-3 text-sm">
+                            <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                            <span><strong>Joins de Regalías:</strong> Cruce específico para el cálculo de contratos y pagos editoriales.</span>
+                        </li>
+                        <li class="flex gap-3 text-sm">
+                            <i class="fa-solid fa-magnifying-glass text-emerald-500 mt-1"></i>
+                            <span><strong>Análisis de Datos:</strong> Uso de Joins externos para identificar autores "huérfanos" (sin obras registradas).</span>
+                        </li>
+                    </ul>
+
+                    <div class="code-block mt-4">
+                        <span class="highlight-sql">-- Contraste Logístico vs Autoria</span><br>
+                        SELECT P.ProductName, S.CompanyName<br>
+                        FROM Products P<br>
+                        INNER JOIN Suppliers S ON P.SupplierID = S.SupplierID
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 3: Datos del Equipo -->
+        <section class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-5">
+                <i class="fa-solid fa-users text-8xl"></i>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                <div>
+                    <h3 class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-4">Información Académica</h3>
+                    <div class="space-y-2">
+                        <p class="text-slate-800 font-bold text-xl">Modelado de Bases de Datos</p>
+                        <p class="text-slate-500 text-sm">Semestre 2026-I</p>
+                        <p class="text-slate-500 text-sm font-medium">UAC - Ingeniería de Sistemas</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-4">Integrantes del Equipo</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-3 text-slate-700 font-medium text-sm">
+                            <i class="fa-solid fa-user-circle text-slate-300"></i> Olivera Ochoa Paul Claus
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-700 font-medium text-sm">
+                            <i class="fa-solid fa-user-circle text-slate-300"></i> Carpio Delgado, Alejandro Eduardo
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-700 font-medium text-sm">
+                            <i class="fa-solid fa-user-circle text-slate-300"></i> Thiago Molero
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-700 font-medium text-sm">
+                            <i class="fa-solid fa-user-circle text-slate-300"></i> Joaquin Haro Rosales
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-6xl mx-auto mt-16 pb-10 text-center border-t border-slate-200 pt-8">
+        <div class="flex justify-center gap-6 mb-4 text-slate-300">
+            <i class="fa-solid fa-database"></i>
+            <i class="fa-solid fa-code-branch"></i>
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <p class="text-slate-400 text-[10px] uppercase tracking-widest">Proyecto Académico • UAC Sistemas • 2026</p>
+    </footer>
+
+</body>
+</html>
